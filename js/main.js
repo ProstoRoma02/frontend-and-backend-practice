@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initAnimations();
     initMobileMenu();
     initCodeCopyButtons();
+    initImageErrorHandling();
 });
 
 // ===== ПЛАВНАЯ ПРОКРУТКА =====
@@ -238,48 +239,100 @@ function initCodeCopyButtons() {
     const codeBlocks = document.querySelectorAll('.practice-code pre code');
     
     codeBlocks.forEach(block => {
+        // Проверяем, не добавлена ли уже кнопка
+        if (block.parentElement.querySelector('.copy-code-btn')) {
+            return;
+        }
+        
         const button = document.createElement('button');
         button.className = 'copy-code-btn';
         button.innerHTML = '📋';
         button.title = 'Копировать код';
-        button.style.cssText = `
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: white;
-            padding: 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s ease;
-        `;
+        button.setAttribute('aria-label', 'Копировать код');
         
         const codeContainer = block.parentElement;
         codeContainer.style.position = 'relative';
         codeContainer.appendChild(button);
         
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
             const text = block.textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                button.innerHTML = '✓';
-                button.style.background = 'rgba(76, 175, 80, 0.8)';
-                setTimeout(() => {
-                    button.innerHTML = '📋';
-                    button.style.background = 'rgba(255,255,255,0.1)';
-                }, 2000);
-            }).catch(() => {
-                showNotification('Не удалось скопировать код', 'error');
-            });
+            
+            // Fallback для старых браузеров
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showCopySuccess(button);
+                }).catch(() => {
+                    fallbackCopyTextToClipboard(text, button);
+                });
+            } else {
+                fallbackCopyTextToClipboard(text, button);
+            }
         });
-        
-        button.addEventListener('mouseenter', function() {
-            this.style.background = 'rgba(255,255,255,0.2)';
-        });
-        
-        button.addEventListener('mouseleave', function() {
-            this.style.background = 'rgba(255,255,255,0.1)';
+    });
+}
+
+// Fallback функция для копирования
+function fallbackCopyTextToClipboard(text, button) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            showCopySuccess(button);
+        } else {
+            showNotification('Не удалось скопировать код', 'error');
+        }
+    } catch (err) {
+        showNotification('Не удалось скопировать код', 'error');
+    }
+    
+    document.body.removeChild(textArea);
+}
+
+// Показать успешное копирование
+function showCopySuccess(button) {
+    const originalHTML = button.innerHTML;
+    button.innerHTML = '✓';
+    button.style.background = 'rgba(76, 175, 80, 0.8)';
+    button.style.borderColor = 'rgba(76, 175, 80, 0.8)';
+    
+    setTimeout(() => {
+        button.innerHTML = originalHTML;
+        button.style.background = 'rgba(255,255,255,0.15)';
+        button.style.borderColor = 'rgba(255,255,255,0.2)';
+    }, 2000);
+}
+
+// ===== ОБРАБОТКА ОШИБОК ИЗОБРАЖЕНИЙ =====
+function initImageErrorHandling() {
+    const images = document.querySelectorAll('img');
+    
+    images.forEach(img => {
+        img.addEventListener('error', function() {
+            // Заменяем сломанные изображения на иконки
+            if (this.src.includes('github-mark.png')) {
+                this.style.display = 'none';
+                this.parentElement.innerHTML = '🐙';
+            } else if (this.src.includes('telegram.png')) {
+                this.style.display = 'none';
+                this.parentElement.innerHTML = '💬';
+            } else if (this.src.includes('photo.jpg')) {
+                this.style.display = 'none';
+                this.parentElement.innerHTML = '👤';
+            } else {
+                this.style.display = 'none';
+                this.parentElement.innerHTML = '🖼️';
+            }
         });
     });
 }
