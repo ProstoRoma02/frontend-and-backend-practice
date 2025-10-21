@@ -2,9 +2,10 @@
 <html lang="ру">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <title>Практики</title>
         <link rel="stylesheet" href="../style/styles.css">
+        <script src="../js/main.js" defer></script>
     </head>
     <body>
         <div class="page-container">
@@ -39,9 +40,208 @@
             </nav>
             <main class="content">
                 <section class="experience-section" aria-label="Практические занятия">
-                    <h2 class="section-title">Практики</h2>
+                    <h2 class="section-title">Практические занятия</h2>
+                    
+                    <!-- Практика №9 -->
                     <article class="experience-card">
-                        <p class="experience-desc">Раздел практик. Здесь будут ссылки и материалы по практическим занятиям.</p>
+                        <h3 class="experience-title">Практическое занятие №9: Основы HTML и CSS</h3>
+                        <div class="practice-content">
+                            <h4>Задания:</h4>
+                            <ul class="practice-list">
+                                <li>Создание семантической разметки HTML5</li>
+                                <li>Стилизация с помощью CSS3 (Flexbox, Grid)</li>
+                                <li>Адаптивный дизайн с медиа-запросами</li>
+                                <li>Работа с псевдоэлементами и анимациями</li>
+                            </ul>
+                            <div class="practice-code">
+                                <h4>Пример кода:</h4>
+                                <pre><code>/* CSS Grid Layout */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Flexbox для центрирования */
+.centered-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}</code></pre>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Практика №10 -->
+                    <article class="experience-card">
+                        <h3 class="experience-title">Практическое занятие №10: JavaScript основы</h3>
+                        <div class="practice-content">
+                            <h4>Задания:</h4>
+                            <ul class="practice-list">
+                                <li>Переменные, функции и объекты в JavaScript</li>
+                                <li>Работа с DOM элементами</li>
+                                <li>Обработка событий</li>
+                                <li>Асинхронное программирование (Promise, async/await)</li>
+                            </ul>
+                            <div class="practice-code">
+                                <h4>Пример кода:</h4>
+                                <pre><code>// Обработка событий
+document.addEventListener('DOMContentLoaded', function() {
+    const button = document.getElementById('myButton');
+    button.addEventListener('click', async function() {
+        try {
+            const response = await fetch('/api/data');
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Ошибка:', error);
+        }
+    });
+});</code></pre>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Практика №11 -->
+                    <article class="experience-card">
+                        <h3 class="experience-title">Практическое занятие №11: Фронтенд фреймворки</h3>
+                        <div class="practice-content">
+                            <h4>Задания:</h4>
+                            <ul class="practice-list">
+                                <li>Изучение React.js компонентов</li>
+                                <li>Управление состоянием с помощью useState и useEffect</li>
+                                <li>Роутинг в React приложениях</li>
+                                <li>Интеграция с API</li>
+                            </ul>
+                            <div class="practice-code">
+                                <h4>Пример кода:</h4>
+                                <pre><code>// React компонент
+import React, { useState, useEffect } from 'react';
+
+function UserProfile({ userId }) {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchUser(userId);
+    }, [userId]);
+
+    const fetchUser = async (id) => {
+        try {
+            const response = await fetch(`/api/users/${id}`);
+            const userData = await response.json();
+            setUser(userData);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) return <div>Загрузка...</div>;
+    if (!user) return <div>Пользователь не найден</div>;
+
+    return (
+        <div className="user-profile">
+            <h2>{user.name}</h2>
+            <p>{user.email}</p>
+        </div>
+    );
+}</code></pre>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Практика №12 -->
+                    <article class="experience-card">
+                        <h3 class="experience-title">Практическое занятие №12: Бэкенд разработка</h3>
+                        <div class="practice-content">
+                            <h4>Задания:</h4>
+                            <ul class="practice-list">
+                                <li>Создание REST API с Node.js и Express</li>
+                                <li>Работа с базами данных (MongoDB/PostgreSQL)</li>
+                                <li>Аутентификация и авторизация</li>
+                                <li>Тестирование API с помощью Postman</li>
+                            </ul>
+                            <div class="practice-code">
+                                <h4>Пример кода:</h4>
+                                <pre><code>// Express.js сервер
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// Подключение к MongoDB
+mongoose.connect('mongodb://localhost:27017/myapp', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+// API маршруты
+app.get('/api/users', async (req, res) => {
+    try {
+        const users = await User.find();
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.listen(3000, () => {
+    console.log('Сервер запущен на порту 3000');
+});</code></pre>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Практика №14 -->
+                    <article class="experience-card">
+                        <h3 class="experience-title">Практическое занятие №14: Полноценное веб-приложение</h3>
+                        <div class="practice-content">
+                            <h4>Задания:</h4>
+                            <ul class="practice-list">
+                                <li>Интеграция фронтенда и бэкенда</li>
+                                <li>Деплой приложения на хостинг</li>
+                                <li>Настройка CI/CD пайплайна</li>
+                                <li>Мониторинг и логирование</li>
+                            </ul>
+                            <div class="practice-code">
+                                <h4>Пример кода:</h4>
+                                <pre><code>// Dockerfile для деплоя
+FROM node:16-alpine
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+EXPOSE 3000
+CMD ["npm", "start"]
+
+# docker-compose.yml
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=mongodb://mongo:27017/myapp
+    depends_on:
+      - mongo
+  
+  mongo:
+    image: mongo:4.4
+    ports:
+      - "27017:27017"</code></pre>
+                            </div>
+                        </div>
                     </article>
                 </section>
             </main>
